@@ -2,7 +2,7 @@
 
 (asdf:defsystem #:vt100
   :serial t
-  :description "Describe vt100 here"
+  :description "VT100 commands for controlling a terminal"
   :author "Nicholas Patrick <npatrick04@gmail.com>"
   :license "BSD"
   :components ((:file "package")
