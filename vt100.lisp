@@ -19,22 +19,23 @@
 ; (escape " a test string")
 ; "ateststring"
 
-(defun args->lambda-list (args)
-  (let ((opt (position '&optional args)))
-    (if opt
-        (append (subseq args 0 (1+ opt))
-                (mapcar (lambda (arg)
-                          `(,arg ""))
-                        (subseq args (1+ opt)))
-                '(stream *standard-output*))
-        (append args '(&optional stream *standard-output*)))))
-(defun args->format-list (args)
-  (remove '&optional
-          (mapcar (lambda (arg)
-                    (if (consp arg)
-                        (car arg)
-                        arg))
-                  args)))
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defun args->lambda-list (args)
+    (let ((opt (position '&optional args)))
+      (if opt
+          (append (subseq args 0 (1+ opt))
+                  (mapcar (lambda (arg)
+                            `(,arg ""))
+                          (subseq args (1+ opt)))
+                  '((stream *standard-output*)))
+          (append args '(&optional (stream *standard-output*))))))
+  (defun args->format-list (args)
+    (remove '&optional
+            (mapcar (lambda (arg)
+                      (if (consp arg)
+                          (car arg)
+                          arg))
+                    args))))
 
 (defmacro def-vt100-command (name string args doc)
   `(progn (defun ,name ,(args->lambda-list args)
